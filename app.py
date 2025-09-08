@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_from_directory
 
 app = Flask(__name__)
 
@@ -19,6 +19,10 @@ def comparar_listas():
         "solo_en_A": solo_en_A,
         "solo_en_B": solo_en_B
     })
+
+@app.route("/robots.txt")
+def robots():
+    return send_from_directory(app.root_path, "robots.txt", mimetype="text/plain")
 
 if __name__ == "__main__":
     app.run(debug=True)
