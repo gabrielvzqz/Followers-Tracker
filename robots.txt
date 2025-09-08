@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://https://follower-analyzer.onrender.com//sitemap.xml
+Sitemap: https://follower-analyzer.onrender.com//sitemap.xml
