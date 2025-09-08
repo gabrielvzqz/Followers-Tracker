@@ -238,12 +238,58 @@
     </div>
 
     <nav class="navbar navbar-light" style="background-color: #000000; height: 60px;">
-        <div class="container-fluid justify-content-center">
-            <span class="nav-text" onclick="cambiarIdioma('es')">ES</span>
-            <span class="mx-2">|</span>
-            <span class="nav-text" onclick="cambiarIdioma('en')">EN</span>
+        <div class="container-fluid d-flex justify-content-between">
+            <!-- Botones de idioma a la izquierda -->
+            <div class="d-flex mx-4">
+                <span class="nav-text me-2" onclick="cambiarIdioma('es')">ES</span>
+                <span class="mx-2">|</span>
+                <span class="nav-text ms-2" onclick="cambiarIdioma('en')">EN</span>
+            </div>
+
+            <!-- Botones Tutorial y Sobre mi a la derecha -->
+            <div class="d-flex mx-4">
+                <span id="btnTutorial" class="nav-text me-3" data-bs-toggle="modal"
+                    data-bs-target="#tutorialModal">Tutorial</span>
+                <span id="btnSobreMi" class="nav-text" data-bs-toggle="modal" data-bs-target="#sobreMiModal">About
+                    Me</span>
+            </div>
         </div>
     </nav>
+
+    <div class="modal fade" id="tutorialModal" tabindex="-1" aria-labelledby="tutorialLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tutorialLabel">Tutorial</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <video controls autoplay style="max-width: 100%;">
+                        <source src="/static/TutorialFinal.mp4" type="video/mp4">
+                        Tu navegador no soporta video HTML5.
+                    </video>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="sobreMiModal" tabindex="-1" aria-labelledby="sobreMiLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sobreMiLabel">About Me</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="sobreMiTexto">I'm a Junior Developer, and this page is one of my personal projects. It was
+                        built with care
+                        and functionality in mind, aiming for it to be practical and easy to use.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         let idiomaActual = 'en'; // valor por defecto
@@ -262,7 +308,12 @@
                 notFollowing: "No Sigues",
                 notFollowingYou: "No Te Siguen",
                 ordenPorDefecto: "Por defecto",
-                ordenAlfabetico: "Alfabético"
+                ordenAlfabetico: "Alfabético",
+                tutorialBtn: "Tutorial",
+                sobreMiBtn: "Sobre mí",
+                tutorialLabel: "Tutorial",
+                sobreMiLabel: "Sobre mí",
+                sobreMiTexto: "Soy un desarrollador en formación y esta página es uno de mis proyectos personales. Está hecha con cuidado y funcionalidad en mente, buscando que sea práctica y fácil de usar.",
             },
             en: {
                 titulo: "Follower Analyzer",
@@ -276,7 +327,12 @@
                 notFollowing: "Not Following:",
                 notFollowingYou: "Not Following You:",
                 ordenPorDefecto: "Default",
-                ordenAlfabetico: "Alphabetical"
+                ordenAlfabetico: "Alphabetical",
+                tutorialBtn: "Tutorial",
+                sobreMiBtn: "About Me",
+                tutorialLabel: "Tutorial",
+                sobreMiLabel: "About Me",
+                sobreMiTexto: "I'm a Junior Developer, and this page is one of my personal projects. It was built with care and functionality in mind, aiming for it to be practical and easy to use.",
             }
         };
         document.getElementById('btnCheck').addEventListener('click', comparar);
@@ -359,6 +415,15 @@
             selectOrden.options[0].text = t.ordenPorDefecto;
             selectOrden.options[1].text = t.ordenAlfabetico;
             // Los títulos dentro de las tarjetas se cambiarán dinámicamente al generar los resultados
+
+            // Botones nuevos
+            document.getElementById("btnTutorial").textContent = t.tutorialBtn;
+            document.getElementById("btnSobreMi").textContent = t.sobreMiBtn;
+
+            // Títulos modales
+            document.getElementById("tutorialLabel").textContent = t.tutorialLabel;
+            document.getElementById("sobreMiLabel").textContent = t.sobreMiLabel;
+            document.getElementById("sobreMiTexto").textContent = t.sobreMiTexto;
         }
         document.querySelectorAll('.iconos-fondo i').forEach(icono => {
             const top = Math.random() * 100; // porcentaje vertical
