@@ -1,17 +1,18 @@
-import os
-from flask import Flask, request, jsonify, render_template, send_from_directory
+from flask import Flask, request, jsonify, render_template
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
     return render_template("index.html")
-
+def normalizar(s):
+    return ''.join(s.lower().split()) 
 @app.route("/comparar", methods=["POST"])
 def comparar_listas():
     datos = request.get_json()
-    listaA = datos.get("listaA", "").splitlines()
-    listaB = datos.get("listaB", "").splitlines()
+    listaA = datos.get("listaA", [])
+    listaB = datos.get("listaB", [])
+
 
     solo_en_A = [elem for elem in listaA if elem not in listaB]
     solo_en_B = [elem for elem in listaB if elem not in listaA]
@@ -20,14 +21,6 @@ def comparar_listas():
         "solo_en_A": solo_en_A,
         "solo_en_B": solo_en_B
     })
-
-@app.route("/robots.txt")
-def robots():
-    return send_from_directory(app.root_path, "robots.txt", mimetype="text/plain")
-
-@app.route('/sitemap.xml')
-def sitemap():
-    return send_from_directory(os.path.abspath(os.path.dirname(__file__)), 'sitemap.xml')
 
 if __name__ == "__main__":
     app.run(debug=True)

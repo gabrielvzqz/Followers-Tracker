@@ -15,145 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <style>
-        button,
-        h2,
-        label,
-        select {
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(270deg, #013220, #004d4d, #0b3d91, #1a1a40);
-            /* tonos oscuros */
-            color: #fff;
-            /* texto blanco por contraste */
-        }
-
-        .hero h1 {
-            font-family: 'Poppins', sans-serif;
-            /* título grande */
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        .hero {
-            height: 100vh;
-            width: 100%;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            background: linear-gradient(270deg, #013220, #004d4d, #0b3d91, #1a1a40);
-            /* tonos oscuros */
-            /* tonos oscuros */
-            background-size: 800% 800%;
-            animation: gradientBG 15s ease infinite;
-        }
-
-        .nav-text {
-            color: #fff;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 1rem;
-            text-decoration: none;
-        }
-
-        .nav-text:hover {
-            color: #ffd700;
-            /* efecto hover opcional */
-        }
-
-        .iconos-fondo {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            /* para que no interfieran con clicks */
-            z-index: 0;
-            /* detrás del contenido */
-        }
-
-        .iconos-fondo i {
-            position: absolute;
-            font-size: 2rem;
-            /* tamaño de los íconos */
-            color: rgba(255, 255, 255, 0.2);
-            /* semitransparente */
-            animation: flotar 20s linear infinite;
-            /* opcional, para movimiento */
-        }
-
-        #ordenResultados {
-            background-color: rgba(30, 30, 47, 0.7);
-            /* mismo fondo que las tarjetas */
-            color: #ffffff;
-            /* texto blanco */
-            border: none;
-            /* sin borde */
-            border-radius: 10px;
-            /* esquinas redondeadas */
-            padding: 0.25rem 0.5rem;
-            /* un poco de espacio interno */
-            font-weight: 500;
-            /* un poco más de peso de letra */
-            width: auto;
-            /* ancho ajustable */
-            display: inline-block;
-            margin-left: 0.5rem;
-            /* separación del título */
-        }
-
-        #ordenResultados option {
-            background-color: #1e1e2f;
-            /* fondo de cada opción */
-            color: #ffffff;
-            /* texto de opción */
-        }
-
-        body,
-        #formulario {
-            animation: gradientBG 15s ease infinite;
-            background-size: 800% 800%;
-        }
-
-        /* Animación simple flotante */
-        @keyframes flotar {
-            0% {
-                transform: translateY(0) rotate(0deg);
-            }
-
-            50% {
-                transform: translateY(20px) rotate(20deg);
-            }
-
-            100% {
-                transform: translateY(0) rotate(0deg);
-            }
-        }
-
-        @keyframes gradientBG {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body class="text-dark animated-bg">
@@ -188,6 +50,7 @@
 
     <div class="container py-5 animated-bg" id="formulario" style="background:#2c3e50; 
             color: #EAECF0;
+            border-radius: 15px;
             border-top-left-radius: 15px; 
             border-top-right-radius: 15px;
             box-shadow: 0px -4px 20px rgba(0, 0, 0, 0.4);">
@@ -206,25 +69,29 @@
             </div>
 
             <div class="text-center mb-3">
-                <button id="btnCheck" class="btn btn-light me-3 fw-bold"
-                    style="background: none; border: none; color: #ffffff; font-weight: 600;">Check</button>
+                <button type="button" id="btnCheck" class="btn-custom me-3">Check</button>
                 <span class="text-white">|</span>
-                <button id="btnReset" class="btn btn-light ms-3 fw-bold"
-                    style="background: none; border: none; color: #ffffff; font-weight: 600;">Reset</button>
+                <button type="button" id="btnReset" class="btn-custom ms-3">Reset</button>
             </div>
+
         </form>
 
         <hr style="border: 1px solid black; width: 100%; margin: 2rem 0;">
 
         <div class="text-center mt-5" id="bloqueResultados" style="display: none;">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 id="tituloResultados">Results</h2>
+                <h2 id="tituloResultados" style="font-weight: bold;">Results</h2>
                 <select id="ordenResultados" class="form-select form-select-sm" style="width: auto;"
                     onchange="ordenarResultados()">
                     <option value="default">Default</option>
                     <option value="alfabetico">Alphabetical</option>
                 </select>
             </div>
+
+            <p id="aclaracion" class="form-label fw-bold" style="font-size: 0.9em; margin-top: -10px;">
+                Some usernames may appear with the profile bio underneath.
+            </p>
+
             <div class="row">
                 <div class="col-md-6">
                     <div class="card p-3 mb-3"
@@ -244,25 +111,39 @@
         </div>
 
     </div>
+    <nav class="navbar navbar-light position-fixed top-0 w-100"
+        style="background-color: #000000; height: 60px; z-index: 1050;">
 
-    <nav class="navbar navbar-light" style="background-color: #000000; height: 60px;">
-        <div class="container-fluid d-flex justify-content-between">
-            <!-- Botones de idioma a la izquierda -->
-            <div class="d-flex mx-4">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <!-- Izquierda: botón extra (opcional) -->
+            <div class="d-flex align-items-center mx-4">
+                <!-- Aquí podrías poner un botón pequeño de menú, ayuda, etc. -->
+            </div>
+            <!-- Centro: Icono -->
+            <div style="position: absolute; left: 50%; transform: translateX(-50%);">
+                <img src="/static/FA-modified.png" alt="Icono" style="height: 32px;">
+            </div>
+            <!-- Derecha: Idiomas -->
+            <div class="d-flex align-items-center mx-4">
                 <span class="nav-text me-2" onclick="cambiarIdioma('es')">ES</span>
                 <span class="mx-2">|</span>
                 <span class="nav-text ms-2" onclick="cambiarIdioma('en')">EN</span>
             </div>
-
-            <!-- Botones Tutorial y Sobre mi a la derecha -->
-            <div class="d-flex mx-4">
-                <span id="btnTutorial" class="nav-text me-3" data-bs-toggle="modal"
-                    data-bs-target="#tutorialModal">Tutorial</span>
-                <span id="btnSobreMi" class="nav-text" data-bs-toggle="modal" data-bs-target="#sobreMiModal">About
-                    Me</span>
-            </div>
         </div>
     </nav>
+
+    <!-- Añadir padding superior para que el contenido no quede oculto -->
+    <div style="height: 60px;"></div>
+
+    <footer class="w-100 d-flex justify-content-center align-items-center"
+        style="background-color: #000000; height: 60px; gap: 2rem; margin-top: 2rem;">
+
+        <span id="btnTutorial" class="nav-text" data-bs-toggle="modal" data-bs-target="#tutorialModal">Tutorial</span>
+        <span id="btnSobreMi" class="nav-text" data-bs-toggle="modal" data-bs-target="#sobreMiModal">About Me</span>
+        <button id="btnCompartir" class="nav-text btn" onclick="compartirPagina()">Share</button>
+
+    </footer>
+
 
     <div class="modal fade" id="tutorialModal" tabindex="-1" aria-labelledby="tutorialLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -293,159 +174,14 @@
                 <div class="modal-body">
                     <p id="sobreMiTexto">I'm a Junior Developer, and this page is one of my personal projects. It was
                         built with care
-                        and functionality in mind, aiming for it to be practical and easy to use.</p>
+                        and functionality in mind, aiming for it to be practical and easy to use and without logging
+                        into your account.</p>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        let idiomaActual = 'en'; // valor por defecto
-        let resultadosA = [];
-        let resultadosB = [];
-        const textos = {
-            es: {
-                titulo: "Follower Analyzer",
-                descripcion: "Analiza tus seguidores de manera rápida y sencilla",
-                btnEmpezar: "Analizar",
-                followers: "Seguidores:",
-                following: "Seguidos:",
-                check: "Comparar",
-                reset: "Borrar",
-                results: "Resultados",
-                notFollowing: "No Sigues",
-                notFollowingYou: "No Te Siguen",
-                ordenPorDefecto: "Por defecto",
-                ordenAlfabetico: "Alfabético",
-                tutorialBtn: "Tutorial",
-                sobreMiBtn: "Sobre mí",
-                tutorialLabel: "Tutorial",
-                sobreMiLabel: "Sobre mí",
-                sobreMiTexto: "Soy un desarrollador en formación y esta página es uno de mis proyectos personales. Está hecha con cuidado y funcionalidad en mente, buscando que sea práctica y fácil de usar.",
-            },
-            en: {
-                titulo: "Follower Analyzer",
-                descripcion: "Analyze your followers quickly and easily",
-                btnEmpezar: "Analyze",
-                followers: "Followers:",
-                following: "Following:",
-                check: "Check",
-                reset: "Reset",
-                results: "Results",
-                notFollowing: "Not Following:",
-                notFollowingYou: "Not Following You:",
-                ordenPorDefecto: "Default",
-                ordenAlfabetico: "Alphabetical",
-                tutorialBtn: "Tutorial",
-                sobreMiBtn: "About Me",
-                tutorialLabel: "Tutorial",
-                sobreMiLabel: "About Me",
-                sobreMiTexto: "I'm a Junior Developer, and this page is one of my personal projects. It was built with care and functionality in mind, aiming for it to be practical and easy to use.",
-            }
-        };
-        document.getElementById('btnCheck').addEventListener('click', comparar);
-        document.getElementById('btnReset').addEventListener('click', resetear);
-
-        async function comparar() {
-            const listaA = document.getElementById("listaA").value;
-            const listaB = document.getElementById("listaB").value;
-
-            const response = await fetch("/comparar", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ listaA, listaB })
-            });
-
-            const data = await response.json();
-
-            resultadosA = data.solo_en_A.slice();
-            resultadosB = data.solo_en_B.slice();
-
-            document.getElementById("bloqueResultados").style.display = "block";
-
-            // Insertar resultados en los divs correspondientes
-            mostrarResultados(resultadosA, resultadosB);
-
-        }
-
-        function mostrarResultados(resA, resB) {
-            const t = textos[idiomaActual]; // idioma actual
-
-            document.getElementById("resultadoA").innerHTML = resA.join("<br>");
-            document.getElementById("resultadoB").innerHTML = resB.join("<br>");
-        }
-
-        function ordenarResultados() {
-            const tipo = document.getElementById("ordenResultados").value;
-
-            let resA = resultadosA.slice();
-            let resB = resultadosB.slice();
-
-            if (tipo === "alfabetico") {
-                resA.sort((a, b) => a.localeCompare(b));
-                resB.sort((a, b) => a.localeCompare(b));
-            }
-
-            mostrarResultados(resA, resB);
-        }
-
-        function resetear() {
-            document.getElementById("listaA").value = "";
-            document.getElementById("listaB").value = "";
-            document.getElementById("resultadoA").innerHTML = "";
-            document.getElementById("resultadoB").innerHTML = "";
-            document.getElementById("bloqueResultados").style.display = "none";
-        }
-        function cambiarIdioma(idioma) {
-            const t = textos[idioma];
-
-            // Portada
-            document.querySelector('.hero h1').textContent = t.titulo;
-            document.querySelector('.hero p').textContent = t.descripcion;
-            document.querySelector('.hero a').textContent = t.btnEmpezar;
-
-            // Etiquetas de formularios
-            document.querySelector('label[for="listaA"]').textContent = t.followers;
-            document.querySelector('label[for="listaB"]').textContent = t.following;
-
-            // Botones
-            document.getElementById('btnCheck').textContent = t.check;
-            document.getElementById('btnReset').textContent = t.reset;
-
-
-            // Resultados
-            document.getElementById('tituloResultados').textContent = t.results;
-            document.getElementById('tituloNoSiguen').textContent = t.notFollowing;
-            document.getElementById('tituloNoLosSigues').textContent = t.notFollowingYou;
-
-            // Select de ordenación
-            const selectOrden = document.getElementById("ordenResultados");
-            selectOrden.options[0].text = t.ordenPorDefecto;
-            selectOrden.options[1].text = t.ordenAlfabetico;
-            // Los títulos dentro de las tarjetas se cambiarán dinámicamente al generar los resultados
-
-            // Botones nuevos
-            document.getElementById("btnTutorial").textContent = t.tutorialBtn;
-            document.getElementById("btnSobreMi").textContent = t.sobreMiBtn;
-
-            // Títulos modales
-            document.getElementById("tutorialLabel").textContent = t.tutorialLabel;
-            document.getElementById("sobreMiLabel").textContent = t.sobreMiLabel;
-            document.getElementById("sobreMiTexto").textContent = t.sobreMiTexto;
-        }
-        document.querySelectorAll('.iconos-fondo i').forEach(icono => {
-            const top = Math.random() * 100; // porcentaje vertical
-            const left = Math.random() * 100; // porcentaje horizontal
-            const size = 1 + Math.random() * 3; // tamaño aleatorio entre 1rem y 3rem
-            const rot = Math.random() * 360; // rotación aleatoria
-
-            icono.style.top = top + '%';
-            icono.style.left = left + '%';
-            icono.style.fontSize = size + 'rem';
-            icono.style.transform = `rotate(${rot}deg)`;
-        });
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 
 </html>
