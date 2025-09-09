@@ -1,6 +1,29 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, Response, url_for
 
 app = Flask(__name__)
+
+# Servir robots.txt
+@app.route("/robots.txt")
+def robots():
+    content = """User-agent: *
+Disallow:
+
+Sitemap: https://follower-analyzer.onrender.com/sitemap.xml
+"""
+    return Response(content, mimetype="text/plain")
+
+# Servir sitemap.xml (ejemplo simple)
+@app.route("/sitemap.xml")
+def sitemap():
+    content = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <url>
+      <loc>https://follower-analyzer.onrender.com/</loc>
+      <priority>1.0</priority>
+   </url>
+</urlset>
+"""
+    return Response(content, mimetype="application/xml")
 
 @app.route("/")
 def index():
