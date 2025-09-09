@@ -23,8 +23,10 @@ def sitemap():
    </url>
 </urlset>
 """
-    return Response(content, mimetype="application/xml")
-
+    response = Response(content)
+    response.headers["Content-Type"] = "application/xml"
+    response.headers["Cache-Control"] = "no-cache"
+    return response
 @app.route("/")
 def index():
     return render_template("index.html")
