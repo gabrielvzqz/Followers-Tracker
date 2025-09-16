@@ -1,83 +1,6 @@
-let idiomaActual = 'en'; // valor por defecto
 let resultadosA = [];
 let resultadosB = [];
 
-const textos = {
-    es: {
-        titulo: "Follower Analyzer",
-        descripcion: "Analiza tus seguidores de manera rápida y sencilla",
-        btnEmpezar: "Analizar",
-        followers: "Seguidores:",
-        following: "Seguidos:",
-        check: "Comparar",
-        reset: "Borrar",
-        results: "Resultados",
-        aclaracion: "Algunos nombres de usuario pueden aparecer con la biografía del perfil debajo.",
-        notFollowing: "No Sigues",
-        notFollowingYou: "No Te Siguen",
-        ordenPorDefecto: "Por defecto",
-        ordenAlfabetico: "Alfabético",
-        tutorialBtn: "Tutorial",
-        sobreMiBtn: "Sobre mí",
-        compartirBtn: "Compartir",
-        tutorialLabel: "Tutorial",
-        sobreMiLabel: "Sobre mí",
-        sobreMiTexto: "Soy un desarrollador en formación y esta página es uno de mis proyectos personales. Está hecha con cuidado y funcionalidad en mente, buscando que sea práctica y fácil de usar sin iniciar sesión en tu cuenta.",
-    },
-    en: {
-        titulo: "Follower Analyzer",
-        descripcion: "Analyze your followers quickly and easily",
-        btnEmpezar: "Analyze",
-        followers: "Followers:",
-        following: "Following:",
-        check: "Check",
-        reset: "Reset",
-        results: "Results",
-        aclaracion: "Some usernames may appear with the profile bio underneath.",
-        notFollowing: "Not Following:",
-        notFollowingYou: "Not Following You",
-        ordenPorDefecto: "Default",
-        ordenAlfabetico: "Alphabetical",
-        tutorialBtn: "Tutorial",
-        sobreMiBtn: "About Me",
-        compartirBtn: "Share",
-        tutorialLabel: "Tutorial",
-        sobreMiLabel: "About Me",
-        sobreMiTexto: "I'm a Junior Developer, and this page is one of my personal projects. It was built with care and functionality in mind, aiming for it to be practical and easy to use and without logging into your account",
-    }
-};
-
-// Listener para idioma
-function cambiarIdioma(idioma) {
-    idiomaActual = idioma;
-    const t = textos[idioma];
-
-    document.querySelector('.hero h1').textContent = t.titulo;
-    document.querySelector('.hero p').textContent = t.descripcion;
-    document.querySelector('.hero a').textContent = t.btnEmpezar;
-
-    document.querySelector('label[for="zipFile"]').textContent = idioma === 'es' ? 'Sube un archivo ZIP con followers.json y following_1.json:' : 'Upload ZIP file with followers.json and following.json:';
-
-    document.getElementById('btnCheck').textContent = t.check;
-    document.getElementById('btnReset').textContent = t.reset;
-
-    document.getElementById('tituloResultados').textContent = t.results;
-    document.getElementById('aclaracion').textContent = t.aclaracion;
-    document.getElementById('tituloNoSiguen').textContent = t.notFollowing;
-    document.getElementById('tituloNoLosSigues').textContent = t.notFollowingYou;
-
-    const selectOrden = document.getElementById("ordenResultados");
-    selectOrden.options[0].text = t.ordenPorDefecto;
-    selectOrden.options[1].text = t.ordenAlfabetico;
-
-    document.getElementById("btnTutorial").textContent = t.tutorialBtn;
-    document.getElementById("btnSobreMi").textContent = t.sobreMiBtn;
-    document.getElementById("btnCompartir").textContent = t.compartirBtn;
-
-    document.getElementById("tutorialLabel").textContent = t.tutorialLabel;
-    document.getElementById("sobreMiLabel").textContent = t.sobreMiLabel;
-    document.getElementById("sobreMiTexto").textContent = t.sobreMiTexto;
-}
 
 // Función para extraer usernames de followers o following
 function extraerUsernames(jsonData, tipo) {
@@ -141,10 +64,9 @@ document.getElementById("btnCheck").addEventListener("click", async () => {
 
 
 function mostrarResultados(resA, resB) {
-    const formatear = (nombre) => `<strong>${nombre}</strong>`;
-
-    document.getElementById("resultadoA").innerHTML = resA.map(formatear).join("<hr>");
-    document.getElementById("resultadoB").innerHTML = resB.map(formatear).join("<hr>");
+    const formatear = (nombre) => `<hr><div><strong>${nombre}</strong></div>`;
+    document.getElementById("resultadoA").innerHTML = resA.map(formatear).join("") + "<hr>";
+    document.getElementById("resultadoB").innerHTML = resB.map(formatear).join("") + "<hr>";
 }
 
 
@@ -174,3 +96,19 @@ function compartirPagina() {
         alert('Your browser does not support sharing. Copy the URL instead: ' + window.location.href);
     }
 }
+let lastScrollTop = 0;
+const nav = document.getElementById('mainNav');
+
+window.addEventListener('scroll', () => {
+    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (scrollTop > lastScrollTop) {
+        // Scroll hacia abajo → esconder nav
+        nav.style.transform = 'translateY(-100%)';
+    } else {
+        // Scroll hacia arriba → mostrar nav
+        nav.style.transform = 'translateY(0)';
+    }
+
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // Para evitar valores negativos
+});
