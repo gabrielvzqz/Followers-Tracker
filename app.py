@@ -1,8 +1,24 @@
 from flask import Flask, request, jsonify, render_template, Response, url_for
-
+import zipfile
+import io
+import json
 app = Flask(__name__)
 
 # Servir robots.txt
+@app.route("/comparar-zip", methods=["POST"])
+def comparar_zip():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file uploaded"}), 400
+
+    file = request.files['file']
+    with zipfile.ZipFile(file) as z:
+        followers = json.loads(z.read('followers_1.json'))
+        following = json.loads(z.read('following.json'))
+
+    solo_en_A = [u for u in followers if u not in following]
+    solo_en_B = [u for u in following if u not in followers]
+
+    return jsonify({"solo_en_A": solo_en_A, "solo_en_B": solo_en_B})
 @app.route("/robots.txt")
 def robots():
     content = """User-agent: *

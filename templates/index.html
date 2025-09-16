@@ -2,6 +2,7 @@
 <html lang="es">
 
 <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <meta name="google-site-verification" content="AfHoA6EhChtFFsq1puqhy9zodVc5qPyBZmFrb2LSfG4" />
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7434271777027617"
         crossorigin="anonymous"></script>
@@ -25,18 +26,24 @@
 
         <!-- Iconos de fondo -->
         <div class="iconos-fondo">
-            <i class="bi bi-instagram" aria-hidden="true"></i>
-            <i class="bi bi-instagram" aria-hidden="true"></i>
-            <i class="bi bi-tiktok" aria-hidden="true"></i>
-            <i class="bi bi-tiktok" aria-hidden="true"></i>
-            <i class="bi bi-instagram" aria-hidden="true"></i>
-            <i class="bi bi-tiktok" aria-hidden="true"></i>
-            <i class="bi bi-instagram" aria-hidden="true"></i>
-            <i class="bi bi-instagram" aria-hidden="true"></i>
-            <i class="bi bi-tiktok" aria-hidden="true"></i>
-            <i class="bi bi-tiktok" aria-hidden="true"></i>
-            <i class="bi bi-instagram" aria-hidden="true"></i>
-            <i class="bi bi-tiktok" aria-hidden="true"></i>
+            <i class="bi bi-instagram" aria-hidden="true" style="font-size: 4rem;"></i>
+            <i class="bi bi-instagram" aria-hidden="true" style="font-size: 2rem;"></i>
+            <i class="bi bi-instagram" aria-hidden="true" style="font-size: 6rem;"></i>
+            <i class="bi bi-instagram" aria-hidden="true" style="font-size: 7rem;"></i>
+            <i class="bi bi-instagram" aria-hidden="true" style="font-size: 2rem;"></i>
+            <i class="bi bi-instagram" aria-hidden="true" style="font-size: 8rem;"></i>
+            <i class="bi bi-instagram" aria-hidden="true" style="font-size: 4rem;"></i>
+            <i class="bi bi-instagram" aria-hidden="true" style="font-size: 2rem;"></i>
+            <i class="bi bi-instagram" aria-hidden="true" style="font-size: 6rem;"></i>
+            <i class="bi bi-instagram" aria-hidden="true" style="font-size: 7rem;"></i>
+            <i class="bi bi-instagram" aria-hidden="true" style="font-size: 2rem;"></i>
+            <i class="bi bi-instagram" aria-hidden="true" style="font-size: 8rem;"></i>
+            <i class="bi bi-instagram" aria-hidden="true" style="font-size: 4rem;"></i>
+            <i class="bi bi-instagram" aria-hidden="true" style="font-size: 2rem;"></i>
+            <i class="bi bi-instagram" aria-hidden="true" style="font-size: 6rem;"></i>
+            <i class="bi bi-instagram" aria-hidden="true" style="font-size: 7rem;"></i>
+            <i class="bi bi-instagram" aria-hidden="true" style="font-size: 2rem;"></i>
+            <i class="bi bi-instagram" aria-hidden="true" style="font-size: 8rem;"></i>
             <!-- Añade tantos como quieras -->
         </div>
 
@@ -54,29 +61,20 @@
             border-top-left-radius: 15px; 
             border-top-right-radius: 15px;
             box-shadow: 0px -4px 20px rgba(0, 0, 0, 0.4);">
-        <form>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="listaA" class="form-label fw-bold">Followers:</label>
-                    <textarea class="form-control" id="listaA" rows="8"
-                        style="resize: none; background-color: #3a4f66; color: #ffffff; border: none;"></textarea>
+        <div class="container py-5 animated-bg" id="formulario"
+            style="background:#2c3e50; color: #EAECF0; border-radius: 15px; box-shadow: 0px -4px 20px rgba(0, 0, 0, 0.4);">
+            <form id="formZip">
+                <div class="mb-3">
+                    <label for="zipFile" class="form-label fw-bold">Upload ZIP file with followers.json and
+                        following.json:</label>
+                    <input class="form-control" type="file" id="zipFile" accept=".zip">
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label for="listaB" class="form-label fw-bold">Following:</label>
-                    <textarea class="form-control" id="listaB" rows="8"
-                        style="resize: none; background-color: #243344; color: #ffffff; border: none;"></textarea>
+                <div class="text-center mb-3">
+                    <button type="button" id="btnCheck" class="btn-custom me-3">Check</button>
                 </div>
-            </div>
+            </form>
+        </div>
 
-            <div class="text-center mb-3">
-                <button type="button" id="btnCheck" class="btn-custom me-3">Check</button>
-                <span class="text-white">|</span>
-                <button type="button" id="btnReset" class="btn-custom ms-3">Reset</button>
-            </div>
-
-        </form>
-
-        <hr style="border: 1px solid black; width: 100%; margin: 2rem 0;">
 
         <div class="text-center mt-5" id="bloqueResultados" style="display: none;">
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -88,9 +86,6 @@
                 </select>
             </div>
 
-            <p id="aclaracion" class="form-label fw-bold" style="font-size: 0.9em; margin-top: -10px;">
-                Some usernames may appear with the profile bio underneath.
-            </p>
 
             <div class="row">
                 <div class="col-md-6">
@@ -155,7 +150,7 @@
                 </div>
                 <div class="modal-body text-center">
                     <video controls autoplay style="max-width: 100%;">
-                        <source src="/static/TutorialFinal.mp4" type="video/mp4">
+                        <source href="https://www.youtube.com/watch?v=Ys2_HeT5Pqs" type="video/mp4">
                         Tu navegador no soporta video HTML5.
                     </video>
                 </div>

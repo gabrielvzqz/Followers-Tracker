@@ -1,6 +1,7 @@
 let idiomaActual = 'en'; // valor por defecto
 let resultadosA = [];
 let resultadosB = [];
+
 const textos = {
     es: {
         titulo: "Follower Analyzer",
@@ -34,7 +35,7 @@ const textos = {
         results: "Results",
         aclaracion: "Some usernames may appear with the profile bio underneath.",
         notFollowing: "Not Following:",
-        notFollowingYou: "Not Following You:",
+        notFollowingYou: "Not Following You",
         ordenPorDefecto: "Default",
         ordenAlfabetico: "Alphabetical",
         tutorialBtn: "Tutorial",
@@ -45,88 +46,102 @@ const textos = {
         sobreMiTexto: "I'm a Junior Developer, and this page is one of my personal projects. It was built with care and functionality in mind, aiming for it to be practical and easy to use and without logging into your account",
     }
 };
-document.getElementById('btnCheck').addEventListener('click', function (e) {
-    e.preventDefault(); // Evita que se recargue la página
-    comparar(); // Llama a tu función
-});
 
-document.getElementById('btnReset').addEventListener('click', function (e) {
-    e.preventDefault(); // Evita que se recargue la página
-    resetear(); // Llama a tu función
-});
-// Función para limpiar cualquier línea inválida
-function limpiarYNormalizar(lineas) {
-    const emojiRegex = /[\p{Emoji_Presentation}\p{Emoji}\u231A-\u231B\u23E9-\u23EC\u23F0\u23F3\u25FD-\u25FE\u2600-\u27BF\u2934-\u2935\u2B05-\u2B07\u2B1B-\u2B1C\u2B50\u2B55]/u;
-    const resultados = [];
-    const vistos = new Set();
+// Listener para idioma
+function cambiarIdioma(idioma) {
+    idiomaActual = idioma;
+    const t = textos[idioma];
 
-    for (let linea of lineas) {
-        const original = linea.trim();
-        if (!original) continue;
+    document.querySelector('.hero h1').textContent = t.titulo;
+    document.querySelector('.hero p').textContent = t.descripcion;
+    document.querySelector('.hero a').textContent = t.btnEmpezar;
 
-        const lower = original.toLowerCase();
+    document.querySelector('label[for="zipFile"]').textContent = idioma === 'es' ? 'Sube un archivo ZIP con followers.json y following_1.json:' : 'Upload ZIP file with followers.json and following.json:';
 
-        // Eliminamos solo si es interpuncto o nombres de perfil
-        if (lower === "·" || lower.includes("profile photo") || lower.includes("foto del perfil")) continue;
+    document.getElementById('btnCheck').textContent = t.check;
+    document.getElementById('btnReset').textContent = t.reset;
 
+    document.getElementById('tituloResultados').textContent = t.results;
+    document.getElementById('aclaracion').textContent = t.aclaracion;
+    document.getElementById('tituloNoSiguen').textContent = t.notFollowing;
+    document.getElementById('tituloNoLosSigues').textContent = t.notFollowingYou;
 
-        // Normalizamos para comparar: minúsculas y sin espacios
-        const normalizado = lower.replace(/\s+/g, '');
+    const selectOrden = document.getElementById("ordenResultados");
+    selectOrden.options[0].text = t.ordenPorDefecto;
+    selectOrden.options[1].text = t.ordenAlfabetico;
 
-        // Evitamos duplicados internos
-        if (!vistos.has(normalizado)) {
-            resultados.push({ original, normalizado });
-            vistos.add(normalizado);
-        }
+    document.getElementById("btnTutorial").textContent = t.tutorialBtn;
+    document.getElementById("btnSobreMi").textContent = t.sobreMiBtn;
+    document.getElementById("btnCompartir").textContent = t.compartirBtn;
+
+    document.getElementById("tutorialLabel").textContent = t.tutorialLabel;
+    document.getElementById("sobreMiLabel").textContent = t.sobreMiLabel;
+    document.getElementById("sobreMiTexto").textContent = t.sobreMiTexto;
+}
+
+// Función para extraer usernames de followers o following
+function extraerUsernames(jsonData, tipo) {
+    if (!jsonData) return [];
+    let arr;
+
+    if (tipo === "followers") {
+        // followers es un array
+        arr = Array.isArray(jsonData) ? jsonData : [];
+    } else if (tipo === "following") {
+        // following está dentro de relationships_following
+        arr = jsonData.relationships_following || [];
+    } else {
+        arr = [];
     }
 
-    return resultados;
+    // Extraemos los usernames de string_list_data
+    return arr.flatMap(obj => obj.string_list_data?.map(u => u.value) || []);
 }
 
-async function comparar() {
-    const listaA = document.getElementById("listaA").value.split("\n");
-    const listaB = document.getElementById("listaB").value.split("\n");
+// Listener del botón Check para ZIP
+document.getElementById("btnCheck").addEventListener("click", async () => {
+    const fileInput = document.getElementById("zipFile");
+    if (!fileInput.files.length) return alert("Select a ZIP file");
 
-    const usuariosA = limpiarYNormalizar(listaA);
-    const usuariosB = limpiarYNormalizar(listaB);
+    try {
+        const file = fileInput.files[0];
+        const zip = await JSZip.loadAsync(file);
 
-    // Enviar solo las versiones normalizadas al backend
-    const response = await fetch("/comparar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            listaA: usuariosA.map(u => u.normalizado),
-            listaB: usuariosB.map(u => u.normalizado)
-        })
-    });
+        async function leerJSON(nombreArchivo) {
+            const file = Object.values(zip.files).find(f => f.name.endsWith(nombreArchivo));
+            if (!file) throw new Error(`Archivo ${nombreArchivo} no encontrado en ZIP`);
+            const text = await file.async("string");
+            return JSON.parse(text);
+        }
 
-    const data = await response.json();
+        const followersData = await leerJSON("followers_1.json");
+        const followingData = await leerJSON("following.json");
 
-    // Mapear resultados a nombres originales
-    resultadosA = usuariosA
-        .filter(u => data.solo_en_A.includes(u.normalizado))
-        .map(u => u.original);
+        // Extraer usernames
+        const listaAoriginal = extraerUsernames(followersData, "followers");
+        const listaBoriginal = extraerUsernames(followingData, "following");
 
-    resultadosB = usuariosB
-        .filter(u => data.solo_en_B.includes(u.normalizado))
-        .map(u => u.original);
+        // Normalizar para comparar
+        const listaANormal = listaAoriginal.map(u => u.trim().toLowerCase());
+        const listaBNormal = listaBoriginal.map(u => u.trim().toLowerCase());
 
-    document.getElementById("bloqueResultados").style.display = "block";
-    mostrarResultados(resultadosA, resultadosB);
-}
+        // Comparación correcta
+        resultadosA = listaAoriginal.filter(u => !listaBNormal.includes(u.toLowerCase()));
+        resultadosB = listaBoriginal.filter(u => !listaANormal.includes(u.toLowerCase()));
+
+        // Mostrar resultados
+        document.getElementById("bloqueResultados").style.display = "block";
+        mostrarResultados(resultadosA, resultadosB);
+
+    } catch (err) {
+        alert("Error reading ZIP or JSON: " + err.message);
+        console.error(err);
+    }
+});
+
 
 function mostrarResultados(resA, resB) {
-    const t = textos[idiomaActual]; // idioma actual
-
-    const emojiRegex = /[\p{Emoji_Presentation}\p{Emoji}\u231A-\u231B\u23E9-\u23EC\u23F0\u23F3\u25FD-\u25FE\u2600-\u27BF\u2934-\u2935\u2B05-\u2B07\u2B1B-\u2B1C\u2B50\u2B55]/u;
-
-    const formatear = (nombre) => {
-        const empiezaMayus = /^[A-Z]/.test(nombre);
-        if (!emojiRegex.test(nombre) && !empiezaMayus) {
-            return `<strong>${nombre}</strong>`;
-        }
-        return nombre;
-    };
+    const formatear = (nombre) => `<strong>${nombre}</strong>`;
 
     document.getElementById("resultadoA").innerHTML = resA.map(formatear).join("<hr>");
     document.getElementById("resultadoB").innerHTML = resB.map(formatear).join("<hr>");
@@ -147,64 +162,7 @@ function ordenarResultados() {
     mostrarResultados(resA, resB);
 }
 
-function resetear() {
-    document.getElementById("listaA").value = "";
-    document.getElementById("listaB").value = "";
-    document.getElementById("resultadoA").innerHTML = "";
-    document.getElementById("resultadoB").innerHTML = "";
-    document.getElementById("bloqueResultados").style.display = "none";
-}
-function cambiarIdioma(idioma) {
-    const t = textos[idioma];
 
-    // Portada
-    document.querySelector('.hero h1').textContent = t.titulo;
-    document.querySelector('.hero p').textContent = t.descripcion;
-    document.querySelector('.hero a').textContent = t.btnEmpezar;
-
-    // Etiquetas de formularios
-    document.querySelector('label[for="listaA"]').textContent = t.followers;
-    document.querySelector('label[for="listaB"]').textContent = t.following;
-
-    // Botones
-    document.getElementById('btnCheck').textContent = t.check;
-    document.getElementById('btnReset').textContent = t.reset;
-
-
-    // Resultados
-    document.getElementById('tituloResultados').textContent = t.results;
-    document.getElementById('aclaracion').textContent = t.aclaracion;
-    document.getElementById('tituloNoSiguen').textContent = t.notFollowing;
-    document.getElementById('tituloNoLosSigues').textContent = t.notFollowingYou;
-
-    // Select de ordenación
-    const selectOrden = document.getElementById("ordenResultados");
-    selectOrden.options[0].text = t.ordenPorDefecto;
-    selectOrden.options[1].text = t.ordenAlfabetico;
-    // Los títulos dentro de las tarjetas se cambiarán dinámicamente al generar los resultados
-
-    // Botones nuevos
-    document.getElementById("btnTutorial").textContent = t.tutorialBtn;
-    document.getElementById("btnSobreMi").textContent = t.sobreMiBtn;
-    document.getElementById("btnCompartir").textContent = t.compartirBtn;
-
-
-    // Títulos modales
-    document.getElementById("tutorialLabel").textContent = t.tutorialLabel;
-    document.getElementById("sobreMiLabel").textContent = t.sobreMiLabel;
-    document.getElementById("sobreMiTexto").textContent = t.sobreMiTexto;
-}
-document.querySelectorAll('.iconos-fondo i').forEach(icono => {
-    const top = Math.random() * 100; // porcentaje vertical
-    const left = Math.random() * 100; // porcentaje horizontal
-    const size = 1 + Math.random() * 3; // tamaño aleatorio entre 1rem y 3rem
-    const rot = Math.random() * 360; // rotación aleatoria
-
-    icono.style.top = top + '%';
-    icono.style.left = left + '%';
-    icono.style.fontSize = size + 'rem';
-    icono.style.transform = `rotate(${rot}deg)`;
-});
 function compartirPagina() {
     if (navigator.share) {
         navigator.share({
