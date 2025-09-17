@@ -61,14 +61,42 @@ document.getElementById("btnCheck").addEventListener("click", async () => {
         console.error(err);
     }
 });
-
-
 function mostrarResultados(resA, resB) {
-    const formatear = (nombre) => `<hr><div><strong>${nombre}</strong></div>`;
-    document.getElementById("resultadoA").innerHTML = resA.map(formatear).join("") + "<hr>";
-    document.getElementById("resultadoB").innerHTML = resB.map(formatear).join("") + "<hr>";
-}
+    const formatear = (nombre) => `<hr><div><strong>@${nombre}</strong></div>`;
 
+    const colA = document.querySelector("#resultadoA").parentElement.parentElement; // div.col-md-6
+    const colB = document.querySelector("#resultadoB").parentElement.parentElement; // div.col-md-6
+    const resultadoA = document.getElementById("resultadoA");
+    const resultadoB = document.getElementById("resultadoB");
+    const checkbox = document.getElementById("toggleA");
+
+    // Llenar resultados
+    resultadoA.innerHTML = resA.map(formatear).join("") + "<hr>";
+    resultadoB.innerHTML = resB.map(formatear).join("") + "<hr>";
+
+    function actualizarVisibilidad() {
+        if (checkbox.checked) {
+            // Checkbox marcado: mostrar columna A y B a 6/6
+            colA.style.display = "block";
+            colA.classList.remove("col-12");
+            colA.classList.add("col-md-6");
+
+            colB.classList.remove("col-12");
+            colB.classList.add("col-md-6");
+        } else {
+            // Checkbox desmarcado: ocultar columna A, columna B ocupa todo
+            colA.style.display = "none";
+            colB.style.display = "block";
+            colB.classList.add("mx-auto");
+        }
+    }
+
+    // Inicial
+    actualizarVisibilidad();
+
+    // Al cambiar checkbox
+    checkbox.addEventListener("change", actualizarVisibilidad);
+}
 
 function ordenarResultados() {
     const tipo = document.getElementById("ordenResultados").value;

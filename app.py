@@ -62,6 +62,9 @@ def comparar_listas():
         "solo_en_A": solo_en_A,
         "solo_en_B": solo_en_B
     })
+@app.route("/faq")
+def faq():
+    return render_template("faq.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

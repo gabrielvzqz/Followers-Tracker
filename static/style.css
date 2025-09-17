@@ -101,6 +101,13 @@
             /* texto de opción */
         }
 
+        #resultadoA,
+        #resultadoB {
+            text-align: left;
+            padding-left: 25px;
+
+        }
+
         body,
         #formulario {
             animation: gradientBG 15s ease infinite;
