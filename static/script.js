@@ -10,16 +10,19 @@ function extraerUsernames(jsonData, tipo) {
     if (tipo === "followers") {
         // followers es un array
         arr = Array.isArray(jsonData) ? jsonData : [];
-    } else if (tipo === "following") {
+        return arr.flatMap(obj => obj.string_list_data?.map(u => u.value) || []);
+    }
+    else if (tipo === "following") {
         // following está dentro de relationships_following
         arr = jsonData.relationships_following || [];
-    } else {
-        arr = [];
+        // Aquí usamos el título, no el value
+        return arr.map(obj => obj.title).filter(Boolean);
     }
-
-    // Extraemos los usernames de string_list_data
-    return arr.flatMap(obj => obj.string_list_data?.map(u => u.value) || []);
+    else {
+        return [];
+    }
 }
+
 
 // Listener del botón Check para ZIP
 document.getElementById("btnCheck").addEventListener("click", async () => {
